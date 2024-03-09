@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_dump_load_utf8',
     'django_extensions',
+
+    'products',
 ]
 
 MIDDLEWARE = [
