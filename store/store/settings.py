@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django_extensions',
 
     'products',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -114,7 +115,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Kaliningrad'
 
 USE_I18N = True
 
@@ -129,8 +130,17 @@ STATICFILES_DIRS = (
     BASE_DIR / 'static',
 )
 
+
+# Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+
+# Users
+AUTH_USER_MODEL = 'users.User'
+
+
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
