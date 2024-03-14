@@ -1,47 +1,10 @@
-from django.shortcuts import render
-from .models import Product, ProductCategory
+from django.shortcuts import render, HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
+from products.models import Product, ProductCategory, CartItem
+from users.models import User
 
-# Create your views here.
+
 # views = контроллеры = обработчики запросов = функции = вьюхи
-products_dict = [
-    {
-        "image": "/static/vendor/img/products/Adidas-hoodie.png",
-        "name": "Худи черного цвета с монограммами adidas Originals",
-        "price": '6 090,00 руб.',
-        "description": "Мягкая ткань для свитшотов. Стиль и комфорт – это образ жизни.",
-    },
-    {
-        "image": "/static/vendor/img/products/Blue-jacket-The-North-Face.png",
-        "name": "Синяя куртка The North Face",
-        "price": '23 725,00 руб.',
-        "description": "Гладкая ткань. Водонепроницаемое покрытие. Легкий и теплый пуховый наполнитель.",
-    },
-    {
-        "image": "/static/vendor/img/products/Brown-sports-oversized-top-ASOS-DESIGN.png",
-        "name": "Коричневый спортивный oversized-топ ASOS DESIGN",
-        "price": '3 390,00 руб.',
-        "description": "Материал с плюшевой текстурой. Удобный и мягкий.",
-    },
-    {
-        "image": "/static/vendor/img/products/Black-Nike-Heritage-backpack.png",
-        "name": "Черный рюкзак Nike Heritage",
-        "price": '2 340,00 руб.',
-        "description": "Плотная ткань. Легкий материал.",
-    },
-    {
-        "image": "/static/vendor/img/products/Black-Dr-Martens-shoes.png",
-        "name": "Черные туфли на платформе с 3 парами люверсов Dr Martens 1461 Bex",
-        "price": '13 590,00 руб.',
-        "description": "Гладкий кожаный верх. Натуральный материал.",
-    },
-    {
-        "image": "/static/vendor/img/products/Dark-blue-wide-leg-ASOs-DESIGN-trousers.png",
-        "name": "Темно-синие широкие строгие брюки ASOS DESIGN",
-        "price": '2 890,00 руб.',
-        "description": "Легкая эластичная ткань сирсакер Фактурная ткань.",
-    },
-]
-
 
 def index(request):
     context = {'title': 'Store'}
@@ -55,3 +18,25 @@ def products(request):
         'categories': ProductCategory.objects.all(),
     }
     return render(request, 'products/products.html', context)
+
+
+@login_required
+def add_to_cart(request, product_id):
+    product = Product.objects.get(id=product_id)
+    cart_items = CartItem.objects.filter(user=request.user, product=product)
+
+    if cart_items:
+        cart_item = cart_items.first()
+        cart_item.quantity += 1
+        cart_item.save()
+    else:
+        CartItem.objects.create(user=request.user, product=product, quantity=1)
+
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+@login_required
+def remove_from_cart(request, order_id):
+    cart_item = CartItem.objects.get(id=order_id)
+    cart_item.delete()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
