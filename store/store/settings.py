@@ -138,8 +138,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 # Users
 AUTH_USER_MODEL = 'users.User'
-
-
+LOGIN_URL = '/users/login/'
 
 
 # Default primary key field type
