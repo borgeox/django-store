@@ -16,9 +16,12 @@
             <div class="col-lg-3">
 
                 <h1 class="my-4">Store</h1>
+                <a href="{% url 'products:index' %}" class="list-group-item">Все категории</a>
                 <div class="list-group">
                     {% for category in categories %}
-                        <a href="#" class="list-group-item">{{ category.name }} </a>
+                        <a href="{% url 'products:category' category.id %}"
+                           class="list-group-item">{{ category.name }}
+                        </a>
                     {% endfor %}
                 </div>
 
@@ -84,21 +87,42 @@
                     {% endfor %}
 
                 </div>
+                {% if products.paginator.count > 1 %}
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-center">
+                            {% if products.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ products.previous_page_number }}" tabindex="-1"
+                                       aria-disabled="true">Назад</a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Назад</a>
+                                </li>
+                            {% endif %}
+                            {% for page in page_numbers %}
+                                {% if products.number == page %}
+                                    <li class="page-item active"></li>
+                                {% elif page >= products.number|add:-2 and page <= products.number|add:2 %}
+                                    <li class="page-item"></li>
+                                {% endif %}
+                                <a class="page-link" href="?page={{ page }}">
+                                    {{ page }}
+                                </a>
+                            {% endfor %}
 
-                <nav aria-label="Page navigation example">
-                    <ul class="pagination justify-content-center">
-                        <li class="page-item disabled">
-                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-                        </li>
-                        <li class="page-item"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item">
-                            <a class="page-link" href="#">Next</a>
-                        </li>
-                    </ul>
-                </nav>
-
+                            {% if products.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ products.next_page_number }}">Далее</a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#">Далее</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                {% endif %}
             </div>
 
         </div>
